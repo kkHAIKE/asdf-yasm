@@ -30,10 +30,10 @@ list_github_tags() {
 		sed 's/^v//' # NOTE: You might want to adapt this sed to remove non-version strings from tags
 }
 
+RELEASES_URL="https://api.github.com/repos/yasm/yasm/releases"
+
 list_all_versions() {
-	# TODO: Adapt this. By default we simply list the tag names from GitHub releases.
-	# Change this function if yasm has other means of determining installable versions.
-	list_github_tags
+	curl -fsSL "$RELEASES_URL" | sed -n "s|^ *\"tag_name\": *\"v\{0,1\}||p" | sed -n "s|\",$||p"
 }
 
 download_release() {
@@ -41,8 +41,7 @@ download_release() {
 	version="$1"
 	filename="$2"
 
-	# TODO: Adapt the release URL convention for yasm
-	url="$GH_REPO/archive/v${version}.tar.gz"
+	url="$GH_REPO/releases/download/v$version/$TOOL_NAME-$version.tar.gz"
 
 	echo "* Downloading $TOOL_NAME release $version..."
 	curl "${curl_opts[@]}" -o "$filename" -C - "$url" || fail "Could not download $url"
