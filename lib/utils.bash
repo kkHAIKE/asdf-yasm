@@ -33,7 +33,7 @@ list_github_tags() {
 RELEASES_URL="https://api.github.com/repos/yasm/yasm/releases"
 
 list_all_versions() {
-	curl -fsSL "$RELEASES_URL" | sed -n "s|^ *\"tag_name\": *\"v\{0,1\}||p" | sed -n "s|\",$||p"
+	curl "${curl_opts[@]}" "$RELEASES_URL" | sed -n "s|^ *\"tag_name\": *\"v\{0,1\}||p" | sed -n "s|\",$||p"
 }
 
 download_release() {
